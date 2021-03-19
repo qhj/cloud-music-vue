@@ -1,0 +1,5 @@
+services:
+  cloud-music:
+    image: binaryify/netease_cloud_music_api
+    ports: 
+      - 3001:3000
