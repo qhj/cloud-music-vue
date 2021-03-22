@@ -1,15 +1,19 @@
 <template>
-  <HelloWorld msg="网易云音乐 听见好时光" />
+  <Layout />
+  <Player />
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue'
-  import HelloWorld from './components/HelloWorld.vue'
+
+  import Layout from './components/Layout.vue'
+  import Player from './components/Player.vue'
   
   export default defineComponent({
     name: 'App',
     components: {
-      HelloWorld
+      Layout,
+      Player
     }
   })
 </script>
