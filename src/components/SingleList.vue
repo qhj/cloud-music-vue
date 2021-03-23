@@ -3,7 +3,6 @@
     :data="singleList"
     stripe
     :show-header="false"
-    style="width: 100%"
     @row-dblclick="play"
   >
     <el-table-column
@@ -29,14 +28,19 @@
     <el-table-column
       prop="dt"
       width="100">
+      <template #default="props">
+        {{formatTime(props.row.dt)}}
+      </template>
     </el-table-column>
   </el-table>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import { useEventBus } from '../composables/useEvents'
 import { SongMeta } from '../types'
+import { formatTime } from '../utils/formatTime'
 
 export default defineComponent({
   props: {
@@ -54,7 +58,8 @@ export default defineComponent({
     }
 
     return {
-      play
+      play,
+      formatTime
     }
   }
 })
