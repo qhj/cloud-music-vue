@@ -63,7 +63,6 @@ export default defineComponent({
         audio.value.play()
         cover.value = songMeta.al.picUrl + '?param=56y56'
         isPlaying.value = true
-        console.log('放了')
       }
     }
     onMounted(() => bus.value.on('play', play))
