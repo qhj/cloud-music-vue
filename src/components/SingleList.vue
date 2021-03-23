@@ -40,7 +40,7 @@ import { defineComponent } from 'vue'
 
 import { useEventBus } from '../composables/useEvents'
 import { SongMeta } from '../types'
-import { formatTime } from '../utils/formatTime'
+import { formatTime } from '../utils'
 
 export default defineComponent({
   props: {

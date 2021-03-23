@@ -10,24 +10,33 @@
     </div>
     <div class="middle">
       <div class="state">
-        <span>歌名</span>
-        <span>进度</span>
+        <div>
+          <span>{{songName}}</span>
+          <span class="artists"> - {{artists}}</span>
+        </div>
+        <div>
+          <span>{{currentTime}}</span>
+          <span class="duration-time">
+            / {{durationTime}}
+          </span>
+        </div>
       </div>
-      <el-slider v-model="value" :show-tooltip="false"></el-slider>
+      <el-slider v-model="progress" :show-tooltip="false" :max="1000" @change="changeProgress"></el-slider>
     </div>
     <!-- <div>
       
     </div> -->
   </div>
-  <audio ref="audio" />
+  <audio ref="audio" @timeupdate="updateTime" @pause="isPlaying = false" />
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue'
-import { useEventBus } from '../composables/useEvents'
 
+import { useEventBus } from '../composables/useEvents'
 import { useSong } from '../composables/useSong'
 import { SongMeta } from '../types'
+import { formatTime } from '../utils'
 
 export default defineComponent({
   setup() {
@@ -36,6 +45,26 @@ export default defineComponent({
     const icon = computed(() => isPlaying.value ? 'el-icon-video-pause' : 'el-icon-video-play')
     const { song, loadSong } = useSong()
     const cover = ref('')
+    const meta = ref<SongMeta>()
+    const currentTime = ref('00:00')
+    const progress = ref(0)
+    const songName = ref('')
+    const artists = ref('')
+    const durationTime = computed(() => {
+      if (!meta.value) {
+        return '00:00'
+      }
+      return formatTime(meta.value.dt)
+    })
+    const updateTime = () => {
+      if (!audio.value) {
+        return '00:00'
+      }
+      currentTime.value = formatTime(audio.value.currentTime * 1000)
+      if (meta.value) {
+        progress.value = Math.floor(audio.value.currentTime * 1000 / meta.value.dt * 1000) 
+      }
+    }
     const { bus } = useEventBus()
     const continueOrPause = () => {
       if (!audio.value) {
@@ -50,6 +79,7 @@ export default defineComponent({
       }
     }
     const play = async (songMeta: SongMeta) => {
+      meta.value = songMeta
       if (!audio.value) {
         return
       }
@@ -62,19 +92,31 @@ export default defineComponent({
         audio.value.src = song.value.url
         audio.value.play()
         cover.value = songMeta.al.picUrl + '?param=56y56'
+        songName.value = songMeta.name
+        artists.value = songMeta.ar.reduce((names, value) => `${names}/${value.name}`.replace(/^\//, ''), '')
         isPlaying.value = true
       }
     }
     onMounted(() => bus.value.on('play', play))
     onUnmounted(() => bus.value.off('play', play))
-    const value = ref(0)
+    const changeProgress = (value: number) => {
+      if (audio.value && meta.value) {
+        audio.value.currentTime = value / 1000 * meta.value.dt / 1000
+      }
+    }
     return {
       isPlaying,
       audio,
       icon,
       continueOrPause,
       cover,
-      value
+      durationTime,
+      currentTime,
+      updateTime,
+      progress,
+      songName,
+      artists,
+      changeProgress
     }
   }
 })
@@ -122,5 +164,11 @@ img {
 }
 .el-slider :deep(.el-slider__runway), .el-slider :deep(.el-slider__bar) {
   height: 3px;
+}
+.duration-time {
+  color: gray;
+}
+.artists {
+  color: gray;
 }
 </style>
