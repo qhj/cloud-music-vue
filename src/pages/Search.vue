@@ -8,7 +8,7 @@
       @keyup.enter="search"
     >
       <template #suffix>
-        <i class="el-input__icon el-icon-search"></i>
+        <i class="el-input__icon el-icon-search" @click="search"></i>
       </template>
     </el-input>
   </div>
@@ -25,7 +25,10 @@
       >{{hot}}</el-button>
     </div>
     <div class="history-search">
-      <span>搜索历史</span>
+      <div class="history">
+        <span>搜索历史</span>
+        <i class="el-icon-delete"></i>
+      </div>
       <hr />
     </div>
   </div>
@@ -127,6 +130,10 @@ export default defineComponent({
 div > span {
   color: gray;
   font-size: 0.8rem;
+}
+.history {
+  display: flex;
+  justify-content: space-between;
 }
 /* https://stackoverflow.com/a/6382036 */
 hr {
