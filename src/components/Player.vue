@@ -12,7 +12,7 @@
       <div class="state">
         <div>
           <span>{{songName}}</span>
-          <span class="artists"> - {{artists}}</span>
+          <span class="artists">{{`${artists.length === 0 ? artists : ' - ' + artists}`}}</span>
         </div>
         <div>
           <span>{{currentTime}}</span>
