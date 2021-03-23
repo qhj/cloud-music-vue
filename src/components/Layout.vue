@@ -57,10 +57,6 @@
   }
   main {
     grid-area: main;
-    margin: 15px;
-    margin-top: 0;
-    position: relative;
-    top: 0;
-    bottom: 56px;
+    margin: 0 15px 60px;
   }
 </style>
