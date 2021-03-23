@@ -14,7 +14,7 @@
       width="180"
     >
       <template #default="props">
-        <span v-for="artist in props.row.ar" :key="artist.id">{{artist.name}}</span>
+        <span v-for="(artist, index) in props.row.ar" :key="artist.id">{{artist.name + `${index === props.row.ar.length - 1 ? '' : '/'}`}}</span>
       </template>
     </el-table-column>
     <el-table-column
