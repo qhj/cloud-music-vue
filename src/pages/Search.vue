@@ -14,7 +14,10 @@
   </div>
   <div class="search-item" v-if="totalSongs === 0">
     <div class="top-search">
-      <span>热门搜索</span>
+      <div class="text-only">
+        <span>热门搜索</span>
+        <i class="el-icon-star-on placeholder"></i>
+      </div>
       <hr />
       <el-button
         class="hot"
@@ -27,9 +30,27 @@
     <div class="history-search">
       <div class="history">
         <span>搜索历史</span>
-        <i class="el-icon-delete"></i>
+        <i class="el-icon-delete" @click="openDialog = true"></i>
       </div>
       <hr />
+      <ul v-if="history.length !== 0">
+        <li v-for="(word, index) in history" :key="word" class="history-word">
+          <span>{{word}}</span>
+          <i class="el-icon-close" @click="deleteHistory(index)"></i>
+        </li>
+      </ul>
+      <el-dialog
+        v-model="openDialog"
+        width="300px"
+        center>
+        <span>确定清除搜索历史记录？</span>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button type="danger" @click="empty">清除</el-button>
+            <el-button @click="openDialog = false">取消</el-button>
+          </span>
+        </template>
+      </el-dialog>
     </div>
   </div>
   <div class="search-result" v-else>
@@ -54,6 +75,7 @@ import { http } from '../services/fetch'
 import { HotResponse } from '../types'
 import { useSingles } from '../composables/useSingles'
 import SingleList from '../components/SingleList.vue'
+import { useHistory } from '../composables/useHistory'
 
 export default defineComponent({
   components: {
@@ -70,13 +92,19 @@ export default defineComponent({
       mv: '1004',
       radios: '1009',
     }
+    const openDialog = ref(false)
     const input = ref('')
     const hots = reactive<string[]>([])
-    const history = ref<string[]>([])
+    const { history, addHistory, deleteHistory, emptyHistory }  = useHistory()
+    const empty = () => {
+      emptyHistory()
+      openDialog.value = false
+    }
     const { singles, totalSongs, loadSingles } = useSingles()
     const clickHot = async (index: number) => {
       input.value = hots[index]
       await loadSingles(input.value, searchType[type.value])
+      addHistory(input.value)
     }
     
     onMounted(async () => {
@@ -86,18 +114,24 @@ export default defineComponent({
       })
     })
     const search = async () => {
-      // const data = await http(`/search?keywords=${input}`)
+      if (input.value.length === 0) {
+        return
+      }
       await loadSingles(input.value, searchType[type.value])
+      addHistory(input.value)
     }
     return {
       input,
+      openDialog,
       hots,
       history,
       clickHot,
       singles,
       totalSongs,
       type,
-      search
+      search,
+      deleteHistory,
+      empty
     }
   }
 })
@@ -131,7 +165,7 @@ div > span {
   color: gray;
   font-size: 0.8rem;
 }
-.history {
+.history, .history-word {
   display: flex;
   justify-content: space-between;
 }
@@ -154,5 +188,20 @@ hr {
 }
 .search-box :deep(.el-input__suffix-inner) .el-icon-search {
   order: 2;
+}
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+li {
+  font-size: 0.8rem;
+  line-height: 1.7rem;
+}
+.text-only {
+  display: flex;
+  justify-content: space-between;
+}
+.placeholder {
+  opacity: 0;
 }
 </style>
