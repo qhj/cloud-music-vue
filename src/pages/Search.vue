@@ -1,14 +1,16 @@
-<template>
-  <el-input
-    class="search-box"
-    placeholder="搜索音乐、歌手、歌词、用户"
-    v-model="input"
-    clearable
-  >
-    <template #suffix>
-      <i class="el-input__icon el-icon-search"></i>
-    </template>
-  </el-input> 
+<template> 
+  <div class="search-div">
+    <el-input
+      class="search-box"
+      placeholder="搜索音乐、歌手、歌词、用户"
+      v-model="input"
+      clearable
+    >
+      <template #suffix>
+        <i class="el-input__icon el-icon-search"></i>
+      </template>
+    </el-input>
+  </div>
   <div class="search-item" v-if="totalSongs === 0">
     <div class="top-search">
       <span>热门搜索</span>
@@ -38,9 +40,6 @@
       <el-tab-pane label="主播电台" name="radios">主播电台</el-tab-pane>
       <el-tab-pane label="用户" name="users">用户</el-tab-pane>
     </el-tabs>
-  </div>
-  <div class="test">
-    {{totalSongs}}
   </div>
 </template>
 
@@ -96,12 +95,24 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.search-div {
+  padding-top: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #fff;
+  
+}
 .search-item {
   margin-top: 10px;
   display: flex;
 }
-.search-result {
-  margin-top: 10px;
+.search-result :deep(.el-tabs__header) {
+  position: sticky;
+  top: 55px;
+  z-index: 90;
+  background-color: #fff;
+  padding-top: 10px;
 }
 .top-search, .history-search {
   margin: 10px;
@@ -130,12 +141,5 @@ hr {
 }
 .search-box :deep(.el-input__suffix-inner) .el-icon-search {
   order: 2;
-}
-.test {
-  height: 100px;
-  width: 100px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
 }
 </style>
