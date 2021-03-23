@@ -72,4 +72,7 @@ export default defineComponent({
   text-overflow: ellipsis;
   overflow: hidden;
 }
+tr {
+  user-select: none;
+}
 </style>
