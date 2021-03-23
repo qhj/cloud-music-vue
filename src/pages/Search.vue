@@ -5,6 +5,7 @@
       placeholder="搜索音乐、歌手、歌词、用户"
       v-model="input"
       clearable
+      @keyup.enter="search"
     >
       <template #suffix>
         <i class="el-input__icon el-icon-search"></i>
@@ -81,6 +82,10 @@ export default defineComponent({
         hots.push(hot.first)
       })
     })
+    const search = async () => {
+      // const data = await http(`/search?keywords=${input}`)
+      await loadSingles(input.value, searchType[type.value])
+    }
     return {
       input,
       hots,
@@ -88,7 +93,8 @@ export default defineComponent({
       clickHot,
       singles,
       totalSongs,
-      type
+      type,
+      search
     }
   }
 })
