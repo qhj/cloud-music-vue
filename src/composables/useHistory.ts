@@ -14,7 +14,7 @@ export const useHistory = () => {
 
   const addHistory = (word: string) => {
     if (!history.value.includes(word)) {
-      history.value.push(word)
+      history.value.unshift(word)
     } else {
       const index = history.value.indexOf(word)
       history.value.splice(index, 1)
