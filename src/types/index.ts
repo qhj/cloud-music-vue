@@ -58,3 +58,13 @@ export interface SongResponse {
   code: number
   data: Song[]
 }
+
+export interface Banner {
+  pic: string
+  song?: SongMeta
+}
+
+export interface BannerResponse {
+  banners: Banner[]
+  code: 200
+}
