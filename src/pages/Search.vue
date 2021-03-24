@@ -6,6 +6,7 @@
       v-model="input"
       clearable
       @keyup.enter="search"
+      @clear="clearInput"
     >
       <template #suffix>
         <i class="el-input__icon el-icon-search" @click="search"></i>
@@ -35,8 +36,8 @@
       <hr />
       <ul v-if="history.length !== 0">
         <li v-for="(word, index) in history" :key="word" class="history-word">
-          <span>{{word}}</span>
-          <i class="el-icon-close" @click="deleteHistory(index)"></i>
+          <span class="history-text" @click="clickHistory(index)">{{word}}</span>
+          <i class="history-close el-icon-close" @click="deleteHistory(index)"></i>
         </li>
       </ul>
       <el-dialog
@@ -101,12 +102,20 @@ export default defineComponent({
       openDialog.value = false
     }
     const { singles, totalSongs, loadSingles } = useSingles()
+    const clearInput = () => {
+      singles.value = []
+      totalSongs.value = 0
+    }
     const clickHot = async (index: number) => {
       input.value = hots[index]
       await loadSingles(input.value, searchType[type.value])
       addHistory(input.value)
     }
-    
+    const clickHistory = async (index: number) => {
+      input.value = history.value[index]
+      await loadSingles(history.value[index], searchType[type.value])
+      addHistory(history.value[index])
+    }
     onMounted(async () => {
       const data = await http<HotResponse>('/search/hot')
       data.result.hots.forEach(hot => {
@@ -131,7 +140,9 @@ export default defineComponent({
       type,
       search,
       deleteHistory,
-      empty
+      empty,
+      clearInput,
+      clickHistory
     }
   }
 })
@@ -165,9 +176,19 @@ div > span {
   color: gray;
   font-size: 0.8rem;
 }
-.history, .history-word {
+.history {
   display: flex;
   justify-content: space-between;
+}
+.history-word {
+  display: flex;
+  align-items: center;
+}
+.history-text {
+  flex: 1;
+}
+.history-close {
+  flex: 0 0 12.8px;
 }
 /* https://stackoverflow.com/a/6382036 */
 hr {
