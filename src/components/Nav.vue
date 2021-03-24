@@ -73,10 +73,14 @@ export default defineComponent({
     border-left: solid 3px #903c3e;
   }
   .el-menu-item {
-    padding-left: 10px !important;
+    padding: 0 10px !important;
     height: 48px;
+    display: flex !important;
+    align-items: center;
   }
   .el-menu-item :deep(div) {
     padding: 0 10px !important;
+    display: flex !important;
+    align-items: center;
   }
 </style>
